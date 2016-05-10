@@ -7,13 +7,12 @@ public class CustomPanel extends JPanel {
 
 	public static final int sizeX = 520;
 	public static final int sizeY = 600;
-	private static Point point = new Point(10,10);
-	private boolean ready;
+	private static Point point = new Point(10,15);
 	
 	private static final long serialVersionUID = -3969675782215042594L; // why
 	
 	public CustomPanel() {
-		ready = false;
+		
 	}
 
 	public Dimension getPreferredSize() {
@@ -25,16 +24,13 @@ public class CustomPanel extends JPanel {
 		super.paint(g);
 		
 		// create gui
-		if (!ready) {
-			g.setColor(new Color(0,0,150));
-			g.fillRect(0,0,330,570);
-			g.setColor(new Color(100,0,20));
-			g.fillRect(360,240,130,90);
-			g.setColor(Color.black);
-			g.fillRect(10,10,310,550);
-			g.fillRect(365,245,120,80);
-			ready = true;
-		}
+		g.setColor(new Color(0,0,150));
+		g.fillRect(0,0,320,570);
+		g.setColor(new Color(100,0,20));
+		g.fillRect(360,240,130,90);
+		g.setColor(Color.black);
+		g.fillRect(10,15,300,540);
+		g.fillRect(365,245,120,80);
 	
 		// create square
 		g.setColor(Color.white);
@@ -42,8 +38,8 @@ public class CustomPanel extends JPanel {
 	}
 	
 	public static void main(String[] args) {
-		JPanel p = new CustomPanel();
 		JFrame f = new JFrame("Tetris Game");
+		JPanel p = new CustomPanel();
 		
 		// set up JFrame
 		f.setResizable(false);
