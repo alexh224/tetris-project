@@ -42,6 +42,8 @@ public class Game extends JPanel {
 			for (int j = 0; j < 18; j++) {
 				g.setColor(board[i][j]);
 				g.fillRect(i*30+10,j*30+15,30,30);
+				g.setColor(Color.black);
+				g.drawRect(i*30+10,j*30+15,30,30);
 			}
 		}
 		
@@ -90,9 +92,9 @@ public class Game extends JPanel {
 			curBlock.blockCoords[1][2] = true;
 		}
 		else if (curBlock.type == 5) {
-			curBlock.blockCoords[1][0] = true; // 0 0 0
+			curBlock.blockCoords[0][1] = true; // 0 0 0
 			curBlock.blockCoords[1][1] = true; // 1 1 0
-			curBlock.blockCoords[2][1] = true; // 0 1 1
+			curBlock.blockCoords[1][2] = true; // 0 1 1
 			curBlock.blockCoords[2][2] = true;
 		}
 		else if (curBlock.type == 6) {
@@ -127,9 +129,9 @@ public class Game extends JPanel {
 		
 		KeyListener l = new KeyListener() {
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_UP && curBlock.p.y > 0){
-					int n = 3;
-					if (curBlock.type < 2) n = 4;
+				int n = 3;
+				if (curBlock.type < 2) n = 4;
+				if (e.getKeyCode() == KeyEvent.VK_UP && curBlock.p.y > 0 && curBlock.isFalling){
 
 					boolean[][] temp = new boolean[n][n];
 					for (int i = 0; i < n; i++) {
@@ -145,34 +147,49 @@ public class Game extends JPanel {
 						}
 					}
 					
-					
 				    panel.repaint();
 		        }
-				else if (e.getKeyCode() == KeyEvent.VK_LEFT && curBlock.p.x > 15){
-					
+				else if (e.getKeyCode() == KeyEvent.VK_LEFT && curBlock.isFalling){
+
+					boolean allowMovement = true;
 					for (int i = 0; i < 4; i++) {
 						for (int j = 0; j < 4; j++) {
 							if (curBlock.blockCoords[i][j] && curBlock.p.y + (j*30) > 0) {
-								board[((curBlock.p.x-10)/pieceSize)+i][((curBlock.p.y-15)/pieceSize)+j] = Color.black; // remove existing piece from board array
+								if (((curBlock.p.x-10)/pieceSize)+i < 1 || board[((curBlock.p.x-10)/pieceSize)+i-1][((curBlock.p.y-15)/pieceSize)+j] != Color.black) {
+									allowMovement = false;
+								}
+								else if (((curBlock.p.x-10)/pieceSize)+i >= 1) {
+									board[((curBlock.p.x-10)/pieceSize)+i][((curBlock.p.y-15)/pieceSize)+j] = Color.black; // remove existing piece from board array
+								}
 							}
 						}
 					}
 					
-					curBlock.p.x -= pieceSize;
-					panel.repaint();
+					if (allowMovement) {
+						curBlock.p.x -= pieceSize;
+						panel.repaint();
+					}
 				}
-				else if (e.getKeyCode() == KeyEvent.VK_RIGHT && curBlock.p.x < pieceSize*7-15){
-					
+				else if (e.getKeyCode() == KeyEvent.VK_RIGHT && curBlock.isFalling){
+
+					boolean allowMovement = true;
 					for (int i = 0; i < 4; i++) {
 						for (int j = 0; j < 4; j++) {
 							if (curBlock.blockCoords[i][j] && curBlock.p.y + (j*30) > 0) {
-								board[((curBlock.p.x-10)/pieceSize)+i][((curBlock.p.y-15)/pieceSize)+j] = Color.black; // remove existing piece from board array
+								if (((curBlock.p.x-10)/pieceSize)+i > 8 || board[((curBlock.p.x-10)/pieceSize)+i+1][((curBlock.p.y-15)/pieceSize)+j] != Color.black) {
+									allowMovement = false;
+								}
+								else if (((curBlock.p.x-10)/pieceSize)+i <= 8) {
+									board[((curBlock.p.x-10)/pieceSize)+i][((curBlock.p.y-15)/pieceSize)+j] = Color.black; // remove existing piece from board array	
+								}
 							}
 						}
 					}
 
-					curBlock.p.x += pieceSize;
-					panel.repaint();
+					if (allowMovement) {
+						curBlock.p.x += pieceSize;
+						panel.repaint();
+					}
 				}
 			}
 			
@@ -207,7 +224,7 @@ public class Game extends JPanel {
 				}
 			}
 		};
-		Timer timer = new Timer(500,fall);
+		Timer timer = new Timer(200,fall);
 		timer.start();
 	}
 }
