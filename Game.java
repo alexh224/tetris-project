@@ -107,8 +107,8 @@ public class Game extends JPanel {
 	}
 	
 	public static void main(String[] args) {
-		JFrame f = new JFrame("Tetris Game");
-		JPanel panel = new Game();
+		final JFrame f = new JFrame("Tetris Game");
+		final JPanel panel = new Game();
 		
 		// set up JFrame
 		f.setResizable(false);
@@ -131,7 +131,8 @@ public class Game extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				int n = 3;
 				if (curBlock.type < 2) n = 4;
-				if (e.getKeyCode() == KeyEvent.VK_UP && curBlock.p.y > 0 && curBlock.isFalling){
+				if (e.getKeyCode() == KeyEvent.VK_UP && curBlock.p.y > 0 && curBlock.isFalling && 
+				((curBlock.p.x-10)/pieceSize) < 11-n && ((curBlock.p.x-10)/pieceSize) > 0) { // block isn't hitting wall 
 
 					boolean[][] temp = new boolean[n][n];
 					for (int i = 0; i < n; i++) {
@@ -173,8 +174,8 @@ public class Game extends JPanel {
 				else if (e.getKeyCode() == KeyEvent.VK_RIGHT && curBlock.isFalling){
 
 					boolean allowMovement = true;
-					for (int i = 0; i < 4; i++) {
-						for (int j = 0; j < 4; j++) {
+					for (int i = 3; i >= 0; i--) {
+						for (int j = 3; j >= 0; j--) {
 							if (curBlock.blockCoords[i][j] && curBlock.p.y + (j*30) > 0) {
 								if (((curBlock.p.x-10)/pieceSize)+i > 8 || board[((curBlock.p.x-10)/pieceSize)+i+1][((curBlock.p.y-15)/pieceSize)+j] != Color.black) {
 									allowMovement = false;
@@ -228,4 +229,3 @@ public class Game extends JPanel {
 		timer.start();
 	}
 }
-
